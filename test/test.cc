@@ -81,13 +81,16 @@ int main()
         auto username = v[2];
         curl_easy_setopt(handle, CURLOPT_USERNAME, username.c_str());
         curl_easy_setopt(handle, CURLOPT_PASSWORD, "toybrick");
-        curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "NLST");
+        // curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "NLST");
         curl_easy_setopt(handle, CURLOPT_DIRLISTONLY, 1L);
-        curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
+        // curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(handle, CURLOPT_NOPROXY, "*");
+        std::string s;
+        curl_easy_setopt(handle, CURLOPT_WRITEDATA, &s);
         curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_callback);
 
         curl_easy_perform(handle);
+        fmt::print("{}\n", s);
     }
     curl_easy_cleanup(handle);
     return 0;
