@@ -1,0 +1,12 @@
+[
+    {
+        "name": "vcpkg",
+        "toolchainFile": "D:/src/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "visualStudioArchitecture": "x86",
+        "preferredGenerator": {
+            "name": "Visual Studio 16 2019",
+            "platform": "win32",
+            "toolset": "host=x86"
+        }
+    }
+]
