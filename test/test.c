@@ -2,8 +2,8 @@
  * FTP wildcard pattern matching
  * </DESC>
  */
-#include <curl/curl.h>
 #define _CRT_SECURE_NO_WARNINGS
+#include <curl/curl.h>
 #include <stdio.h>
 
 struct callback_data

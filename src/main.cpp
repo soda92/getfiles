@@ -5,6 +5,7 @@
 #include <curl/curl.h>
 #include <filesystem>
 #include <cstdlib>
+#include <iostream>
 namespace fs = std::filesystem;
 #include <boost/algorithm/string.hpp>
 
@@ -21,7 +22,51 @@ void write_callback(void *data, size_t size, size_t nmemb, void *ptr)
     fwrite(data, size, nmemb, stdout);
 }
 
-int main(int argc, char **argv)
+fs::path get_config_path(std::string arg)
+{
+    auto path = fs::path(arg);
+    path = path.parent_path();
+    path /= "config.txt";
+    // fmt::print("path: {}\n", path.string());
+
+    if (fs::is_regular_file(path))
+    {
+        return path;
+    }
+    path = path.parent_path();
+    path /= "config.example.txt";
+    // fmt::print("path: {}\n", path.string());
+
+    if (fs::is_regular_file(path))
+    {
+        return path;
+    }
+
+    path = path.parent_path().parent_path();
+    path /= "config.txt";
+    // fmt::print("path: {}\n", path.string());
+
+    if (fs::is_regular_file(path))
+    {
+        return path;
+    }
+
+    path = path.parent_path();
+    path /= "config.example.txt";
+    // fmt::print("path: {}\n", path.string());
+
+    if (fs::is_regular_file(path))
+    {
+        return path;
+    }
+    else
+    {
+        fmt::print("error: cannot config file\n");
+        return fs::path("");
+    }
+}
+
+int main()
 {
     CURL *handle;
     /* global initialization */
@@ -37,33 +82,9 @@ int main(int argc, char **argv)
         return CURLE_OUT_OF_MEMORY;
     }
 
-    auto path = fs::path(argv[0]);
-    path = path.parent_path();
-    path /= "config.txt";
-    if (!fs::is_regular_file(path))
-    {
-        path = path.parent_path();
-        path /= "config.example.txt";
-    }
-
-    if (!fs::is_regular_file(path))
-    {
-        path = path.parent_path().parent_path();
-        path /= "config.txt";
-    }
-
-    if (!fs::is_regular_file(path))
-    {
-        path = path.parent_path();
-        path /= "config.example.txt";
-    }
-    if (!fs::is_regular_file(path))
-    {
-        fmt::print("error finding config file\n");
-        return 0;
-    }
-
-    fmt::print("config path: {}\n", path.string());
+    std::string current_path = fs::current_path().string();
+    auto path = get_config_path(current_path);
+    fmt::print("path: {}\n", path.string());
 
     std::ifstream file(path);
     std::vector<std::string> data;
@@ -112,7 +133,8 @@ int main(int argc, char **argv)
 
         curl_easy_perform(handle);
 
-        str::split(v, ss, [](auto c) { return c == '\n'; });
+        str::split(v, ss, [](auto c)
+                   { return c == '\n'; });
 
         for (auto i : v)
         {
@@ -124,5 +146,8 @@ int main(int argc, char **argv)
         }
     }
     curl_easy_cleanup(handle);
+
+    char temp;
+    std::cin >> temp;
     return 0;
 }
