@@ -1,20 +1,14 @@
-#include <curl/curl.h>
 #include <string>
 #include <vector>
-#include <iostream>
 #include <fstream>
 #include <fmt/core.h>
+#include <curl/curl.h>
+
 #include <filesystem>
 namespace fs = std::filesystem;
-#include <source_location>
 #include <boost/algorithm/string.hpp>
+
 namespace str = boost::algorithm;
-
-constexpr std::string get_location()
-{
-    return std::string(std::source_location::current().file_name());
-}
-
 size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *s)
 {
     s->append(static_cast<char *>(ptr), size * nmemb);
@@ -26,7 +20,7 @@ void write_callback(void *data, size_t size, size_t nmemb, void *ptr)
     fwrite(data, size, nmemb, stdout);
 }
 
-int main()
+int main(int argc, char **argv)
 {
     CURL *handle;
     /* global initialization */
@@ -42,8 +36,8 @@ int main()
         return CURLE_OUT_OF_MEMORY;
     }
 
-    fs::path path = fs::path(get_location());
-    path = path.parent_path().parent_path();
+    auto path = fs::path(argv[0]);
+    path = path.parent_path();
     path /= "config.txt";
     std::ifstream file(path);
     std::vector<std::string> data;
@@ -80,7 +74,8 @@ int main()
         curl_easy_setopt(handle, CURLOPT_URL, ftp_addr.c_str());
         auto username = v[2];
         curl_easy_setopt(handle, CURLOPT_USERNAME, username.c_str());
-        curl_easy_setopt(handle, CURLOPT_PASSWORD, "toybrick");
+        auto passwd = v[3];
+        curl_easy_setopt(handle, CURLOPT_PASSWORD, passwd.c_str());
         // curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "NLST");
         curl_easy_setopt(handle, CURLOPT_DIRLISTONLY, 1L);
         // curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
@@ -94,7 +89,11 @@ int main()
                    { return c == '\n'; });
         for (auto i : v)
         {
-            fmt::print("{}\n", str::trim_copy(i));
+            std::string trimed = str::trim_copy(i);
+            if (trimed != "")
+            {
+                fmt::print("{}\n", trimed);
+            }
         }
     }
     curl_easy_cleanup(handle);

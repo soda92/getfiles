@@ -1,2 +1,0 @@
-dest=D:/Data/
-test-server 192.168.1.79 toybrick

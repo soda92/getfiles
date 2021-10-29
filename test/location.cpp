@@ -1,21 +1,11 @@
-#include <iostream>
-#include <string_view>
+#include <fmt/core.h>
 #include <source_location>
+#include <filesystem>
+namespace fs = std::filesystem;
 
-constexpr const char *get_location()
+int main(int argc, char **argv)
 {
-    return std::source_location::current().file_name();
-}
-
-void log(std::string_view message,
-         const char *location)
-{
-    std::cout << "info:"
-              << location << " "
-              << message << '\n';
-}
-
-int main()
-{
-    log("Hello world!", get_location());
+    auto path = fs::path(argv[0]);
+    fmt::print("{}\n", path.parent_path().string());
+    return 0;
 }
