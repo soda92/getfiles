@@ -1,3 +1,13 @@
 {
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cmake.configureArgs": [
+        "-Wno-dev"
+    ],
+    "files.associations": {
+        "*.gradle": "groovy",
+        "*.json": "jsonc",
+        "source_location": "cpp",
+        "format": "cpp",
+        "xstring": "cpp"
+    }
 }
