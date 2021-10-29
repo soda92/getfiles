@@ -21,7 +21,7 @@ int main(void)
         curl_easy_setopt(curl, CURLOPT_USERNAME, "toybrick");
         curl_easy_setopt(curl, CURLOPT_PASSWORD, "toybrick");
         curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "NLST");
-        
+        curl_easy_setopt(curl, CURLOPT_NOPROXY, "*");
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
         res = curl_easy_perform(curl);
         /* Check for errors */

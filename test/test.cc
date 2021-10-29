@@ -15,6 +15,17 @@ constexpr std::string get_location()
     return std::string(std::source_location::current().file_name());
 }
 
+size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *s)
+{
+    s->append(static_cast<char *>(ptr), size * nmemb);
+    return size * nmemb;
+}
+
+void write_callback(void *data, size_t size, size_t nmemb, void *ptr)
+{
+    fwrite(data, size, nmemb, stdout);
+}
+
 int main()
 {
     CURL *handle;
@@ -32,7 +43,7 @@ int main()
     }
 
     fs::path path = fs::path(get_location());
-    path = path.parent_path();
+    path = path.parent_path().parent_path();
     path /= "config.txt";
     std::ifstream file(path);
     std::vector<std::string> data;
@@ -51,6 +62,10 @@ int main()
     for (auto line : data)
     {
         str::split(v, line, str::is_space());
+        // for (auto i : v)
+        // {
+        //     fmt::print("{}\n", i);
+        // }
         auto addr = v[1];
         auto dirname = v[0];
         auto path = fs::path(path_str);
@@ -59,16 +74,21 @@ int main()
         {
             fs::create_directories(path);
         }
-        // auto ftp_addr = fmt::format("ftp://{}/lamp_sample/", addr);
+        auto ftp_addr = fmt::format("ftp://{}/lamp_sample/", addr);
 
-        // curl_easy_reset(handle);
-        // curl_easy_setopt(handle, CURLOPT_URL, ftp_addr);
-        // auto username = v[2];
-        // curl_easy_setopt(handle, CURLOPT_USERNAME, username);
-        // curl_easy_setopt(handle, CURLOPT_PASSWORD, "toybrick");
-        
+        curl_easy_reset(handle);
+        curl_easy_setopt(handle, CURLOPT_URL, ftp_addr.c_str());
+        auto username = v[2];
+        curl_easy_setopt(handle, CURLOPT_USERNAME, username.c_str());
+        curl_easy_setopt(handle, CURLOPT_PASSWORD, "toybrick");
+        curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "NLST");
+        curl_easy_setopt(handle, CURLOPT_DIRLISTONLY, 1L);
+        curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt(handle, CURLOPT_NOPROXY, "*");
+        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_callback);
 
-        fmt::print("{}\n", line);
+        curl_easy_perform(handle);
     }
+    curl_easy_cleanup(handle);
     return 0;
 }
