@@ -90,7 +90,12 @@ int main()
         curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_callback);
 
         curl_easy_perform(handle);
-        fmt::print("{}\n", s);
+        str::split(v, s, [](auto c)
+                   { return c == '\n'; });
+        for (auto i : v)
+        {
+            fmt::print("{}\n", str::trim_copy(i));
+        }
     }
     curl_easy_cleanup(handle);
     return 0;
