@@ -39,6 +39,16 @@ int main(int argc, char **argv)
     auto path = fs::path(argv[0]);
     path = path.parent_path();
     path /= "config.txt";
+    if (!fs::is_regular_file(path))
+    {
+        path = path.parent_path();
+        path /= "config.example.txt";
+    }
+    if (!fs::is_regular_file(path))
+    {
+        fmt::print("error\n");
+        return 0;
+    }
     std::ifstream file(path);
     std::vector<std::string> data;
     std::string line;
@@ -78,14 +88,15 @@ int main(int argc, char **argv)
         curl_easy_setopt(handle, CURLOPT_PASSWORD, passwd.c_str());
         // curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "NLST");
         curl_easy_setopt(handle, CURLOPT_DIRLISTONLY, 1L);
-        // curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(handle, CURLOPT_NOPROXY, "*");
         std::string s;
         curl_easy_setopt(handle, CURLOPT_WRITEDATA, &s);
         curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_callback);
 
         curl_easy_perform(handle);
-        str::split(v, s, [](auto c)
+        std::string s2 = s;
+        str::split(v, s2, [](auto c)
                    { return c == '\n'; });
         for (auto i : v)
         {

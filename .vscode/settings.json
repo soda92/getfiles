@@ -8,6 +8,7 @@
         "*.json": "jsonc",
         "source_location": "cpp",
         "format": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "filesystem": "cpp"
     }
 }
