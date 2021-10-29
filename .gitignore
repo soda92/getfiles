@@ -2,3 +2,5 @@
 /files
 config.txt
 *.log
+/out
+/.vs

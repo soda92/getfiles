@@ -3,15 +3,16 @@
 #include <fstream>
 #include <fmt/core.h>
 #include <curl/curl.h>
-
 #include <filesystem>
+#include <cstdlib>
 namespace fs = std::filesystem;
 #include <boost/algorithm/string.hpp>
 
 namespace str = boost::algorithm;
-size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *s)
+
+size_t writefunc(void *ptr, size_t size, size_t nmemb, std::string *string)
 {
-    s->append(static_cast<char *>(ptr), size * nmemb);
+    string->append(static_cast<char *>(ptr), size * nmemb);
     return size * nmemb;
 }
 
@@ -44,11 +45,26 @@ int main(int argc, char **argv)
         path = path.parent_path();
         path /= "config.example.txt";
     }
+
     if (!fs::is_regular_file(path))
     {
-        fmt::print("error\n");
+        path = path.parent_path().parent_path();
+        path /= "config.txt";
+    }
+
+    if (!fs::is_regular_file(path))
+    {
+        path = path.parent_path();
+        path /= "config.example.txt";
+    }
+    if (!fs::is_regular_file(path))
+    {
+        fmt::print("error finding config file\n");
         return 0;
     }
+
+    fmt::print("config path: {}\n", path.string());
+
     std::ifstream file(path);
     std::vector<std::string> data;
     std::string line;
@@ -88,16 +104,16 @@ int main(int argc, char **argv)
         curl_easy_setopt(handle, CURLOPT_PASSWORD, passwd.c_str());
         // curl_easy_setopt(handle, CURLOPT_CUSTOMREQUEST, "NLST");
         curl_easy_setopt(handle, CURLOPT_DIRLISTONLY, 1L);
-        curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
+        // curl_easy_setopt(handle, CURLOPT_VERBOSE, 1L);
         curl_easy_setopt(handle, CURLOPT_NOPROXY, "*");
-        std::string s;
-        curl_easy_setopt(handle, CURLOPT_WRITEDATA, &s);
-        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, write_callback);
+        std::string ss = "";
+        curl_easy_setopt(handle, CURLOPT_WRITEDATA, &ss);
+        curl_easy_setopt(handle, CURLOPT_WRITEFUNCTION, writefunc);
 
         curl_easy_perform(handle);
-        std::string s2 = s;
-        str::split(v, s2, [](auto c)
-                   { return c == '\n'; });
+
+        str::split(v, ss, [](auto c) { return c == '\n'; });
+
         for (auto i : v)
         {
             std::string trimed = str::trim_copy(i);
