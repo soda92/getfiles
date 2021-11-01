@@ -1,0 +1,3 @@
+[submodule "fineftp-server"]
+	path = fineftp-server
+	url = https://github.com/continental/fineftp-server.git
