@@ -59,11 +59,27 @@ fs::path get_config_path(std::string arg)
     {
         return path;
     }
-    else
+
+    path = fs::path(arg);
+    path = path.parent_path();
+    path /= "config";
+    path /= "config.txt";
+    if (fs::is_regular_file(path))
     {
-        fmt::print("error: cannot config file\n");
-        return fs::path("");
+        return path;
     }
+
+    path = fs::path(arg);
+    path = path.parent_path();
+    path /= "config";
+    path /= "config.example.txt";
+    if (fs::is_regular_file(path))
+    {
+        return path;
+    }
+    
+    fmt::print("error: cannot config file\n");
+    return fs::path("");
 }
 
 int main()

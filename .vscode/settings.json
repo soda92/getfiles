@@ -10,5 +10,6 @@
         "format": "cpp",
         "xstring": "cpp",
         "filesystem": "cpp"
-    }
+    },
+    "cmake.buildDirectory": "${workspaceFolder}/build/msvc"
 }
