@@ -1,9 +1,10 @@
+
 find_package(CURL CONFIG REQUIRED)
 find_package(fmt CONFIG REQUIRED)
-find_package(Boost 1.56 COMPONENTS date_time filesystem REQUIRED)
+find_package(Boost 1.56 COMPONENTS filesystem REQUIRED)
 
 add_executable(t test.c)
-target_link_libraries(t PRIVATE CURL::libcurl fmt::fmt Boost::boost)
+target_link_libraries(t PRIVATE CURL::libcurl fmt::fmt)
 
 add_executable(location location.cpp)
 target_link_libraries(location PRIVATE fmt::fmt)

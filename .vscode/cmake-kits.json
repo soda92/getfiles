@@ -8,5 +8,15 @@
             "platform": "win32",
             "toolset": "host=x86"
         }
+    },
+    {
+        "name": "vc16-x64",
+        "toolchainFile": "D:/src/vcpkg/scripts/buildsystems/vcpkg.cmake",
+        "visualStudioArchitecture": "x64",
+        "preferredGenerator": {
+            "name": "Visual Studio 16 2019",
+            "platform": "x64",
+            "toolset": "host=x64"
+        }
     }
 ]

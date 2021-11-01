@@ -6,7 +6,7 @@ from pathlib import Path
 authorizer = DummyAuthorizer()
 DATA_DIR = Path.joinpath(Path(__file__).resolve().parent, "data")
 print(DATA_DIR)
-breakpoint()
+# breakpoint()
 authorizer.add_user("user", "12345", str(DATA_DIR), perm="elradfmwMT")
 
 handler = FTPHandler
