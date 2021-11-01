@@ -1,3 +1,4 @@
 # getfiles
 
-client for cloning remote ftp directory.
+用于克隆远程FTP服务器文件的应用。支持多个服务器配置。
+

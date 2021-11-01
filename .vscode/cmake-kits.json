@@ -1,6 +1,6 @@
 [
     {
-        "name": "vcpkg",
+        "name": "vc16-x86",
         "toolchainFile": "D:/src/vcpkg/scripts/buildsystems/vcpkg.cmake",
         "visualStudioArchitecture": "x86",
         "preferredGenerator": {

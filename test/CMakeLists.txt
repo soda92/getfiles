@@ -8,5 +8,5 @@ target_link_libraries(t PRIVATE CURL::libcurl fmt::fmt Boost::boost)
 add_executable(location location.cpp)
 target_link_libraries(location PRIVATE fmt::fmt)
 
-file(COPY ${CMAKE_SOURCE_DIR}/config/
-        DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/)
+# file(COPY ${CMAKE_SOURCE_DIR}/config/
+#         DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/)

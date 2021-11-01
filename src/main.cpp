@@ -77,7 +77,7 @@ fs::path get_config_path(std::string arg)
     {
         return path;
     }
-    
+
     fmt::print("error: cannot config file\n");
     return fs::path("");
 }
@@ -100,6 +100,10 @@ int main()
 
     std::string current_path = fs::current_path().string();
     auto path = get_config_path(current_path);
+    if (path.string() == "")
+    {
+        return -1;
+    }
     fmt::print("path: {}\n", path.string());
 
     std::ifstream file(path);
@@ -163,7 +167,7 @@ int main()
     }
     curl_easy_cleanup(handle);
 
-    char temp;
-    std::cin >> temp;
+    // char temp;
+    // std::cin >> temp;
     return 0;
 }
